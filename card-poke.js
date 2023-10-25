@@ -123,6 +123,7 @@ export class CardPoke extends LitElement {
     constructor(){
       super();
       this.oculto = true;
+      this.pokemon = [];
     }
 
 
