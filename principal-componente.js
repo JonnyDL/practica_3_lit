@@ -171,14 +171,24 @@ export class PrincipalComponente extends LitElement {
             </div>
 
             <div class="container">
-                ${this.filteredPokemon.map(
-                    (item)=> html`<card-poke .pokemon=${item}><card-poke>`
-                )}
+                            
+                ${this.pintarPokemones()}
+
             </div>
         `;
     }
 
-
+    pintarPokemones(){
+        if(this.filteredPokemon.length>0){
+            return this.filteredPokemon.map(
+                (item)=> html`<card-poke .pokemon=${item}><card-poke>`
+            )
+        }else{
+            return this.pokemones.map(
+                (item)=> html`<card-poke .pokemon=${item}><card-poke>`
+            )
+        }
+    }
 
     selectRarity(){
         this.filteredPokemon = [];
