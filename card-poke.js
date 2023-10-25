@@ -115,30 +115,30 @@ export class CardPoke extends LitElement {
     static get properties() {
       return {
          pokemon: {type: String},
-         oculto: {type: Boolean},
+         hide: {type: Boolean},
       
       };
     }
 
     constructor(){
       super();
-      this.oculto = true;
+      this.hide = true;
       this.pokemon = [];
     }
 
 
     render() {
         return html`
-           <div class="card-container">
+           <div class="card-container" @click=${this.hideInfo}>
                 <div class="info">
                     <div class="title">
                         <p id='num'>${this.pokemon.num}</p>
                         <p id='name'>${this.pokemon.name}</p>
                     </div>
                     <div class="content" >
-                        <p id="about" ?hidden=${this.oculto}>${this.pokemon.about}</p>
+                        <p id="about" ?hidden=${this.hide}>${this.pokemon.about}</p>
                         <img id="image-poke" src=${this.pokemon.img}/>
-                        <div class="stats" ?hidden=${this.oculto}>
+                        <div class="stats" ?hidden=${this.hide}>
                            <p id="generate">${this.pokemon.generation.num}: ${this.pokemon.generation.name} </p>
                            <p id="size">Alto: ${this.pokemon.size.height}, peso: ${this.pokemon.size.weight}</p>
                            <p id="power">Base de ataque: ${this.pokemon.encounter['base-flee-rate']}</p>
@@ -154,7 +154,13 @@ export class CardPoke extends LitElement {
         `;
     }
 
-
+    hideInfo(){
+      if(this.hide === false){
+         this.hide = true;
+      }else{
+         this.hide = false;
+      }
+    }
 
 }
 

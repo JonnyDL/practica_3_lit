@@ -87,7 +87,15 @@ export class PrincipalComponente extends LitElement {
 
     get _selectRarity() {
         return (this.___selectRarity ??= this.renderRoot?.getElementById('select-poke-rarity') ?? null);
-      }
+    }
+    
+    get _selectType() {
+        return (this.___selectType ??= this.renderRoot?.getElementById('select-poke-type') ?? null);
+    }
+
+    get _selectName() {
+        return (this.___selectName ??= this.renderRoot?.getElementById('input-poke-name') ?? null);
+    }
 
     static get properties() {
         return {
@@ -98,9 +106,8 @@ export class PrincipalComponente extends LitElement {
             filteredPokemon: {type: String},
             banderaName: {type: String},
             opRarity: {type: String},
-
-
-
+            opName: {type: String},
+            opType: {type: String},
         }
     }
 
@@ -116,6 +123,9 @@ export class PrincipalComponente extends LitElement {
         console.log(this.filteredPokemon);
         this.banderaName = false;
         this.opRarity = "";
+        this.opName = "";
+        this.opType = "";
+
     }
 
     /*
@@ -132,7 +142,7 @@ export class PrincipalComponente extends LitElement {
                 
                 <div class="filter-options">
                     <label id="pokemon-rarity">Tipo de rareza:
-                        <select id="select-poke-rarity">
+                        <select id="select-poke-rarity" @click=${this.selectRarity}>
                             <option>Seleciona</option>
                             ${this.fillSelectRarity()}
                             ${this.fillRarityPoke.map((item)=>
@@ -142,8 +152,8 @@ export class PrincipalComponente extends LitElement {
 
                     </label>
 
-                    <!--<label id="pokemon-type">Tipo de pokemon:
-                        <select id="select-poke-type">
+                    <label id="pokemon-type">Tipo de pokemon:
+                        <select id="select-poke-type" @click=${this.selectType}>
                             <option>Seleciona</option>
                            ${this.fillSelectTypePoke()}
                            ${this.typePoke.map(
@@ -154,19 +164,21 @@ export class PrincipalComponente extends LitElement {
 
                     </label>
 
-                    <label id="pokemon-name">Nombre: <input @input=${this.captureName} id="input-poke-name" type="text" placeholder="ej.: Pikachu"/></label>-->
-                    <button id="filter-button" @click=${this.selectRarity}>Buscar</button>
+                    <label id="pokemon-name">Nombre: <input @input=${this.captureName} id="input-poke-name" type="text" placeholder="ej.: Pikachu"/></label>
+                    <button id="filter-button" @click=${this.selectName}>Buscar</button>
                 </div>
                 <p>${this.namePoke}</p>
             </div>
 
             <div class="container">
-                    ${this.filteredPokemon.map(
-                        (item)=> html`<card-poke .pokemon=${item}><card-poke>`
-                    )}
+                ${this.filteredPokemon.map(
+                    (item)=> html`<card-poke .pokemon=${item}><card-poke>`
+                )}
             </div>
         `;
     }
+
+
 
     selectRarity(){
         this.filteredPokemon = [];
@@ -190,6 +202,35 @@ export class PrincipalComponente extends LitElement {
         );
 
         console.log(this.filteredPokemon);
+        this._selectRarity.options[this._selectRarity.selectedIndex= 0];
+
+    }
+
+    selectType(){
+        this.filteredPokemon = [];
+
+        const opType = this._selectType.options[this._selectType.selectedIndex];
+        if(opType){
+            this.opType = opType.value;
+        }
+        //Revisar...
+        console.log(this.opType);
+
+        this.pokemones.forEach(
+            (existente)=>{
+                existente.type.forEach(
+                (item) =>{
+                        if(item === this.opType){
+                            if(!this.filteredPokemon.includes(existente)){
+                                this.filteredPokemon.push(existente);
+                            }
+                        }
+                }
+            )}
+        );
+
+        console.log(this.filteredPokemon);
+        this._selectType.options[this._selectType.selectedIndex= 0];
     }
 
     /*
@@ -207,34 +248,41 @@ export class PrincipalComponente extends LitElement {
     
     */
 
-    filterPoke(e){
-       /* this.pokemones.map( (poke)=>
-            poke.filter((item)=> item.name === this.namePoke ? 
-                html`<card-poke .pokemon=${item}></card-poke>` : 'No se encuentran coincidencias'
-            )
-        )*/
+    selectName(e){
     
-        this.pokemones.filter( (item)=> {
-            if(item.name === this.namePoke.toLowerCase())
-                this.filteredPokemon.push(item);
+        this.filteredPokemon = [];
+
+        const opName = this._selectName.value;
+        if(opName){
+            this.opName = opName;
+        }
+
+        console.log(this.opName);
+
+        this.pokemones.filter(
+            (rareza)=> {
+                if(rareza.name === this.opName){
+                    
+                    if(!this.filteredPokemon.includes(rareza)){
+                        this.filteredPokemon.push(rareza);
+                    }
+                }
             }
         );
 
         console.log(this.filteredPokemon);
+        this._selectName.value = '';
 
     }
 
+    /*
     pintarPoke(){
         if(this.filteredPokemon.length>0){
             this.banderaName = true;
         }
     }
+    */
 
-    captureName(e){
-        const name = e.target.value;
-        this.namePoke = name;
-        console.log(this.namePoke);
-    }
 
     fillSelectRarity(){
         this.pokemones.forEach((existente)=>{
